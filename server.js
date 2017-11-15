@@ -16,9 +16,12 @@ app.use(express.static(path.join(__dirname, 'client')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-
 app.use('/', index);
 app.use('/api', todos);
+// app.use('/api/todos', function(req, res){
+    
+// })
+
 app.listen(port, function(){
     console.log(`Server start on port ${port}`)
 });

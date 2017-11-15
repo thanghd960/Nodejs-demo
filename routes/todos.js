@@ -4,12 +4,25 @@ var mongojs = require('mongojs');
 var db = mongojs('mongodb://thang:thang@ds157325.mlab.com:57325/mytodolist_thang', ['todos'])
 
 // Get all todos
+router.all('*', function(req, res, next){
+    if (!req.get('Origin')) return next();
+    
+        res.set('Access-Control-Allow-Origin','http://localhost:4200');
+        res.set('Access-Control-Allow-Methods','GET, POST, OPTIONS, PUT, DELETE');
+        res.set('Access-Control-Allow-Headers','X-Requested-With,Content-Type');
+    
+        if ('OPTIONS' == req.method) return res.send(200);
+    
+        next();
+})
 router.get('/todos', function(req, res, next){
     // res.send('Todos');
     db.todos.find(function(err, todos){
         if(err){
             res.send(err);
         }
+        
+        // res.header('Access-Control-Allow-Origin', 'http://localhost:4200')
         res.json(todos)
     });
 });
@@ -20,6 +33,7 @@ router.get('/todo/:id', function(req, res, next){
         if(err){
             res.send(err);
         }
+        
         res.json(todo)
     });
 });
@@ -31,6 +45,7 @@ router.delete('/todo/:id', function(req, res, next){
         if(err){
             res.send(err);
         }
+        // res.header('Access-Control-Allow-Origin', 'http://localhost:4200')
         res.json(todo)
     });
 });
@@ -56,6 +71,7 @@ router.put('/todo/:id', function(req, res, next){
             if(err){
                 res.send(err);
             }
+            // res.header('Access-Control-Allow-Origin', 'http://localhost:4200')
             res.json(todo)
         });
     }    
@@ -70,10 +86,12 @@ router.post('/todo', function(req, res, next){
             "error": "Bad Data"
         });
     } else {
+        // res.header('Access-Control-Allow-Origin', 'http://localhost:4200/')
         db.todos.save(todo, function(err, todo){
             if(err){
                 res.send(err);
             }
+            
             res.json(todo);
         });
     }
